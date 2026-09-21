@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Listening - Từng Câu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6 font-sans flex justify-center items-center min-h-screen">
+    <div class="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold text-center text-blue-600 mb-6">Luyện Nghe - Target Listening 1</h1>
+        
+        <div id="quiz-container">
+            <!-- Nội dung câu hỏi sẽ hiển thị ở đây -->
+        </div>
+
+        <div id="feedback" class="mt-4 text-center font-bold text-lg hidden"></div>
+        
+        <button id="next-btn" onclick="nextQuestion()" class="mt-6 w-full bg-blue-500 text-white py-3 rounded-lg font-bold hover:bg-blue-600 transition hidden">
+            Câu tiếp theo
+        </button>
+
+        <div id="result-container" class="hidden text-center mt-6">
+            <h2 class="text-3xl font-bold text-green-600 mb-4">Hoàn thành!</h2>
+            <p id="final-score" class="text-xl mb-6"></p>
+            <button onclick="location.reload()" class="bg-blue-500 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-600">Làm lại từ đầu</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // TASK 1: SHORT ANNOUNCEMENTS OR INSTRUCTION (Track 1.1 - 1.14)
+            { id: 1, text: "Track 1.1: What is the woman going to have for lunch?", options: ["A. pizza", "B. salad", "C. sandwiches", "D. noodle"], answer: 2 },
+            { id: 2, text: "Track 1.2: How much does the man have to pay for the suit?", options: ["A. $250", "B. $270", "C. $300", "D. $350"], answer: 1 },
+            { id: 3, text: "Track 1.3: What time are the speakers going to meet?", options: ["A. 2:00", "B. 2:30", "C. 3:00", "D. 3:30"], answer: 3 },
+            { id: 4, text: "Track 1.4: What is the speaker talking about?", options: ["A. A test at school", "B. Their homework", "C. A teacher", "D. A school friend"], answer: 0 },
+            { id: 5, text: "Track 1.5: What is the matter with her?", options: ["A. a backache", "B. a toothache", "C. the flu", "D. cold"], answer: 3 },
+            { id: 6, text: "Track 1.6: What is inside the building now?", options: ["A. A history museum", "B. A library", "C. A school", "D. A hospital"], answer: 0 },
+            { id: 7, text: "Track 1.7: What is Jack like?", options: ["A. patient", "B. informed", "C. strict", "D. impatient"], answer: 0 },
+            { id: 8, text: "Track 1.8: Where do they decide to eat?", options: ["A. fast-food restaurant", "B. French restaurant", "C. Korean restaurant", "D. fine dining restaurant"], answer: 1 },
+            { id: 9, text: "Track 1.9: What are they talking about?", options: ["A. school", "B. work", "C. apartments", "D. friends"], answer: 1 },
+            { id: 10, text: "Track 1.10: What does the woman ask the man to do?", options: ["A. show a driver's license", "B. pay a deposit", "C. show a passport", "D. spell his name"], answer: 2 },
+            { id: 11, text: "Track 1.11: What is the announcement about?", options: ["A. Hearing music in the park", "B. Things you can buy in the park", "C. Hours that the park is open", "D. Things you can do in the park"], answer: 3 },
+            { id: 12, text: "Track 1.12: What's the problem with the car?", options: ["A. It's red", "B. The headlights are on", "C. The door is open", "D. It's parked in front of the door"], answer: 1 },
+            { id: 13, text: "Track 1.13: What is he apologizing for?", options: ["A. he forgot their date", "B. he was late for the date", "C. he forgot her birthday", "D. he forgot the restaurant"], answer: 2 },
+            { id: 14, text: "Track 1.14: How will the weather be this weekend?", options: ["A. Hot", "B. Clear", "C. Sunny", "D. Rainy"], answer: 3 },
+
+            // TASK 2: CONVERSATIONS (Track 2.1 - 2.10)
+            { id: 15, text: "Track 2.1 - Q1: Right now, Helen has a job in ____", options: ["A. sales", "B. art", "C. design", "D. education"], answer: 0 },
+            { id: 16, text: "Track 2.1 - Q2: In Helen's opinion, a salesperson's job is ____", options: ["A. more interesting than a designer's", "B. easier than a designer's", "C. better paid than a designer's", "D. more difficult than a designer's"], answer: 2 },
+            { id: 17, text: "Track 2.1 - Q3: Helen usually works ____", options: ["A. at home", "B. in a college", "C. in an office", "D. outside"], answer: 2 },
+            { id: 18, text: "Track 2.1 - Q4: For her job, Helen has been to ____", options: ["A. a lot of countries", "B. some countries", "C. no countries", "D. a foreign country"], answer: 1 },
+            { id: 19, text: "Track 2.1 - Q5: In the future, Helen hopes that she is going to ____", options: ["A. be famous", "B. be better paid", "C. have children", "D. be married"], answer: 3 },
+            
+            { id: 20, text: "Track 2.2 - Q1: When does the swimming pool open?", options: ["A. 9:15 a.m", "B. 8 a.m", "C. 7 a.m", "D. 9 a.m."], answer: 0 },
+            { id: 21, text: "Track 2.2 - Q2: When does the leisure centre close?", options: ["A. 9:30 p.m.", "B. 8:15 p.m", "C. 7:30 p.m", "D. 8:30 p.m"], answer: 0 },
+            { id: 22, text: "Track 2.2 - Q3: How much does the swimming pool cost for children?", options: ["A. €15 per day", "B. €2 per hour", "C. €5 per hour", "D. €50 per hour"], answer: 1 },
+            { id: 23, text: "Track 2.2 - Q4: Which place is not open all day?", options: ["A. museum", "B. swimming pool", "C. leisure centre", "D. cinema"], answer: 0 },
+            { id: 24, text: "Track 2.2 - Q5: How much does the museum cost?", options: ["A. €3", "B. €2.30", "C. €0", "D. €13"], answer: 2 },
+
+            { id: 25, text: "Track 2.3 - Q1: How much money was in the bag?", options: ["A. £20", "B. £40", "C. £50"], answer: 0 },
+            { id: 26, text: "Track 2.3 - Q2: What else was in the bag?", options: ["A. credit card", "B. driving licence", "C. gloves"], answer: 2 },
+            { id: 27, text: "Track 2.3 - Q3: The bag was...", options: ["A. old", "B. expensive", "C. big"], answer: 0 },
+            { id: 28, text: "Track 2.3 - Q4: What time did the woman lose the bag?", options: ["A. 9:30", "B. 10:00", "C. 10:30"], answer: 1 },
+            { id: 29, text: "Track 2.3 - Q5: The policeman will telephone her in the...", options: ["A. morning", "B. afternoon", "C. evening"], answer: 0 },
+
+            { id: 30, text: "Track 2.4 - Q1: How many bedrooms does the house on Hall street have?", options: ["A. one", "B. two", "C. three", "D. four"], answer: 2 },
+            { id: 31, text: "Track 2.4 - Q2: How far is it from downtown Miami to the house?", options: ["A. 14 miles", "B. 40 miles", "C. 12 miles", "D. 20 miles"], answer: 0 },
+            { id: 32, text: "Track 2.4 - Q3: How old is the house?", options: ["A. 12", "B. 20", "C. 22", "D. 25"], answer: 1 },
+            { id: 33, text: "Track 2.4 - Q4: When can the man see the house?", options: ["A. Tuesday morning", "B. Thursday morning", "C. Tuesday afternoon", "D. Thursday afternoon"], answer: 1 },
+
+            { id: 34, text: "Track 2.5 - Q1: Mrs Lee's plane goes at...", options: ["A. 8 a.m.", "B. 10 a.m.", "C. 11 a.m."], answer: 1 },
+            { id: 35, text: "Track 2.5 - Q2: She is going to .........", options: ["A. Amsterdam", "B. Frankfurt", "C. London"], answer: 2 },
+            { id: 36, text: "Track 2.5 - Q3: First she will go to.........", options: ["A. a factory", "B. an office", "C. a hotel"], answer: 0 },
+            { id: 37, text: "Track 2.5 - Q4: She will have dinner in .........", options: ["A. a restaurant", "B. her hotel", "C. someone's house"], answer: 0 },
+            { id: 38, text: "Track 2.5 - Q5: The next morning she will travel by .........", options: ["A. plane", "B. train", "C. car"], answer: 1 },
+
+            { id: 39, text: "Track 2.6 - Q1: Samantha has ___ hair.", options: ["A. long", "B. red", "C. short", "D. blond"], answer: 2 },
+            { id: 40, text: "Track 2.6 - Q2: The man's name is ___.", options: ["A. Tommy", "B. Danny", "C. Tony", "D. Tom"], answer: 2 },
+            { id: 41, text: "Track 2.6 - Q3: Samantha would like a cup of ___.", options: ["A. milk", "B. coffee", "C. tea", "D. coffee with milk"], answer: 3 },
+            { id: 42, text: "Track 2.6 - Q4: The man works for ___ magazine.", options: ["A. an American", "B. a British", "C. a Canadian", "D. Australian"], answer: 0 },
+            { id: 43, text: "Track 2.6 - Q5: Samantha's phone number is ___.", options: ["A. 555-1306", "B. 555-4504", "C. 555-4514", "D. 555-1366"], answer: 1 },
+
+            { id: 44, text: "Track 2.7 - Q1: The color of shoes is.........", options: ["A. red", "B. silver", "C. red with silver straps", "D. red and silver"], answer: 2 },
+            { id: 45, text: "Track 2.7 - Q2: They are a pair of.............", options: ["A. tennis shoes", "B. high heels", "C. loafers", "D. sneakers"], answer: 1 },
+            { id: 46, text: "Track 2.7 - Q3: The price is.............", options: ["A. almost $200", "B. over $200", "C. exactly $200", "D. under $200"], answer: 0 },
+            { id: 47, text: "Track 2.7 - Q4: The size is.........", options: ["A. 8", "B. 8 and 1/2", "C. 9", "D. 10"], answer: 1 },
+            { id: 48, text: "Track 2.7 - Q5: The shoes are.........", options: ["A. very comfortable", "B. somewhat comfortable", "C. a little comfortable", "D. not comfortable"], answer: 3 },
+
+            { id: 49, text: "Track 2.8 - Q1: What sport can't you do at the sports centre?", options: ["A. tennis", "B. table-tennis", "C. volleyball"], answer: 0 },
+            { id: 50, text: "Track 2.8 - Q2: How much must Marina pay?", options: ["A. £14 a year", "B. £30 a year", "C. £50 a year"], answer: 1 },
+            { id: 51, text: "Track 2.8 - Q3: How many days a week is the sports centre open?", options: ["A. 2", "B. 3", "C. 4"], answer: 1 },
+            { id: 52, text: "Track 2.8 - Q4: Which bus goes to the sports centre?", options: ["A. number 10", "B. number 16", "C. number 60"], answer: 1 },
+            { id: 53, text: "Track 2.8 - Q5: When will Michael and Marina go to the sports centre?", options: ["A. Tuesday", "B. Thursday", "C. Friday"], answer: 1 },
+
+            { id: 54, text: "Track 2.9 - Q1: When did Joe go to Toronto?", options: ["A. in January", "B. in July", "C. in June", "D. in February"], answer: 0 },
+            { id: 55, text: "Track 2.9 - Q2: Who did Cathy go with?", options: ["A. her brother", "B. her sister", "C. her boyfriend", "D. her mother"], answer: 1 },
+            { id: 56, text: "Track 2.9 - Q3: What was the weather like when Joe went to Niagara?", options: ["A. warm and sunny", "B. wet and rainy", "C. cold and cloudy", "D. cool and windy"], answer: 0 },
+            { id: 57, text: "Track 2.9 - Q4: How did Cathy get to Niagara Falls?", options: ["A. by boat", "B. by coach", "C. by car", "D. by bus"], answer: 2 },
+
+            { id: 58, text: "Track 2.10 - Q1: What time does Mr. Smith get up?", options: ["A. 6:00 a.m.", "B. 6:30 a.m.", "C. 7:00 a.m.", "D. 7:30 a.m."], answer: 0 },
+            { id: 59, text: "Track 2.10 - Q2: What time does he get to work?", options: ["A. 6:30 a.m.", "B. 7:00 a.m.", "C. 7:30 a.m.", "D. 8:00 a.m."], answer: 3 },
+            { id: 60, text: "Track 2.10 - Q3: What does he usually have for lunch?", options: ["A. a pizza", "B. a sandwich", "C. bread", "D. noodle"], answer: 1 },
+            { id: 61, text: "Track 2.10 - Q4: What does he do in the evening?", options: ["A. watch TV", "B. go out", "C. go to the movie", "D. read book"], answer: 0 },
+
+            // TASK 3: TALKS OR LECTURES (Track 3.1 - 3.10)
+            { id: 62, text: "Track 3.1 - Q1: Who is Mr. Peterson?", options: ["A. A nature photographer", "B. A radio announcer", "C. A magazine editor", "D. A travel agent"], answer: 0 },
+            { id: 63, text: "Track 3.1 - Q2: What will Mr. Peterson talk about?", options: ["A. His education", "B. His awards", "C. His book", "D. His trip"], answer: 3 },
+            { id: 64, text: "Track 3.1 - Q3: What will happen in the second half of the show?", options: ["A. A new guest will speak", "B. There will be a news report", "C. The conversation will begin", "D. Mr. Peterson will answer questions"], answer: 3 },
+
+            { id: 65, text: "Track 3.2 - Q1: What time does the speaker call the doctor's office?", options: ["A. 2:00", "B. 7:00", "C. 7:30", "D. 11:30"], answer: 2 },
+            { id: 66, text: "Track 3.2 - Q2: Why did the speaker call?", options: ["A. To make an appointment", "B. To cancel an appointment", "C. To speak with the doctor", "D. To arrange the trip"], answer: 1 },
+            { id: 67, text: "Track 3.2 - Q3: When will the speaker call back?", options: ["A. This afternoon", "B. Wednesday morning", "C. On Saturday", "D. Next week"], answer: 3 },
+
+            { id: 68, text: "Track 3.3 - Q1: How much do tickets cost?", options: ["A. $0", "B. $1", "C. $2", "D. $3"], answer: 0 },
+            { id: 69, text: "Track 3.3 - Q2: Where does the tour take place?", options: ["A. In a museum", "B. In a factory", "C. At a harbour", "D. On a boat"], answer: 0 },
+            { id: 70, text: "Track 3.3 - Q3: What does the guide suggest?", options: ["A. Eating", "B. Drinking", "C. Taking pictures", "D. Buying souvernirs"], answer: 3 },
+
+            { id: 71, text: "Track 3.4 - Q1: Mary Golding is", options: ["A. A student", "B. A coordinator", "C. The student officer", "D. The French teacher"], answer: 2 },
+            { id: 72, text: "Track 3.4 - Q2: The trip begins on", options: ["A. Wednesday 4th April", "B. Saturday 31st March", "C. Saturday 4th April", "D. Wednesday 31st March"], answer: 1 },
+            { id: 73, text: "Track 3.4 - Q3: The trip ends on", options: ["A. 4th April", "B. 14th April", "C. 4th March", "D. 5th April"], answer: 0 },
+            { id: 74, text: "Track 3.4 - Q4: They will cross the Channel", options: ["A. By coach", "B. By hovercraft", "C. By ferry", "D. By train"], answer: 1 },
+            { id: 75, text: "Track 3.4 - Q5: They will return home at around", options: ["A. 10:00", "B. 21:00", "C. 22:00", "D. 11:00"], answer: 2 },
+
+            { id: 76, text: "Track 3.5 - Q31: When was Whitney Houston born?", options: ["A. August 9th", "B. August 6th", "C. August 7th", "D. August 4th"], answer: 0 },
+            { id: 77, text: "Track 3.5 - Q32: What did Whitney Houston do after leaving high school?", options: ["A. a professional model", "B. a professional singer", "C. a model and a singer", "D. an actor"], answer: 2 },
+            { id: 78, text: "Track 3.5 - Q33: When did Whitney Houston begin her acting career?", options: ["A. 1993", "B. 1994", "C. 1992", "D. 1991"], answer: 2 },
+            { id: 79, text: "Track 3.5 - Q34: How many albums did she release?", options: ["A. 5", "B. 2", "C. 7", "D. 4"], answer: 2 },
+            { id: 80, text: "Track 3.5 - Q35: When did she get married?", options: ["A. 2012", "B. 1963", "C. 1993", "D. 1992"], answer: 3 },
+
+            { id: 81, text: "Track 3.6 - Q1: What time does the bank close on Saturday?", options: ["A. 5:00", "B. 8:00", "C. 9:00", "D. 12:00"], answer: 3 },
+            { id: 82, text: "Track 3.6 - Q2: How can you find out how much money is in your bank account?", options: ["A. Press '1'", "B. Press '3'", "C. Hold the line", "D. Call back later"], answer: 0 },
+            { id: 83, text: "Track 3.6 - Q3: Who should press '2'?", options: ["A. Customer service representatives", "B. People wanting to borrow money", "C. People wanting to invest money", "D. Owners of small businesses"], answer: 1 },
+
+            { id: 84, text: "Track 3.7 - Q1: The burglary took place at", options: ["A. A museum", "B. The county hall", "C. A local shop"], answer: 0 },
+            { id: 85, text: "Track 3.7 - Q2: The burglary took place", options: ["A. On Sunday night", "B. On Thursday evening", "C. At the weekend"], answer: 2 },
+            { id: 86, text: "Track 3.7 - Q3: The clock is", options: ["A. One of a pair", "B. Very valuable", "C. The work of an unknown clockmaker"], answer: 1 },
+            { id: 87, text: "Track 3.7 - Q4: In the painting of Sir Foxton, he is", options: ["A. Standing by a horse", "B. Standing by a house", "C. Riding a horse"], answer: 2 },
+            { id: 88, text: "Track 3.7 - Q5: How did the burglars get in?", options: ["A. Through the windows", "B. By the front door", "C. The police don't know"], answer: 2 },
+
+            { id: 89, text: "Track 3.8 - Q1: When will the group Red River come to London?", options: ["A. October 28th", "B. November 2nd", "C. November 4th", "D. November 9th"], answer: 0 },
+            { id: 90, text: "Track 3.8 - Q2: How much is the ticket?", options: ["A. £7", "B. £27", "C. £37", "D. £57"], answer: 2 },
+            { id: 91, text: "Track 3.8 - Q3: What phone number can you reach to book the ticket?", options: ["A. 2230065", "B. 2830065", "C. 2820065", "D. 2830056"], answer: 1 },
+            { id: 92, text: "Track 3.8 - Q4: How can you get to the concert hall?", options: ["A. by bus", "B. train", "C. by subway", "D. by car"], answer: 1 },
+            { id: 93, text: "Track 3.8 - Q5: Where is the concert hall?", options: ["A. in Tainet street", "B. Trimity street", "C. in Trenity street", "D. in Trinity street"], answer: 3 },
+
+            { id: 94, text: "Track 3.9 - Q1: Jill is ............", options: ["A. 13", "B. 23", "C. 28", "D. 30"], answer: 3 },
+            { id: 95, text: "Track 3.9 - Q2: Michael is Jill's ............", options: ["A. brother", "B. father", "C. husband", "D. cousin"], answer: 2 },
+            { id: 96, text: "Track 3.9 - Q3: Joe lives ............", options: ["A. in Texas", "B. in California", "C. in France", "D. in England"], answer: 1 },
+            { id: 97, text: "Track 3.9 - Q4: Barbara works in ............", options: ["A. a hospital", "B. a university", "C. school", "D. a farm"], answer: 0 },
+            { id: 98, text: "Track 3.9 - Q5: Sue lives in ............", options: ["A. France", "B. Portugal", "C. the US", "D. Spain"], answer: 3 },
+
+            { id: 99, text: "Track 3.10 - Q1: What time will people have breakfast?", options: ["A. 7:00", "B. 7:30", "C. 8:00", "D. 8:30"], answer: 3 },
+            { id: 100, text: "Track 3.10 - Q2: Where will people get on the bus?", options: ["A. at the car park", "B. at the hotel", "C. at the bus stop", "D. at the restaurant"], answer: 3 },
+            { id: 101, text: "Track 3.10 - Q3: What color is the lunch ticket?", options: ["A. red", "B. blue", "C. pink", "D. yellow"], answer: 2 },
+            { id: 102, text: "Track 3.10 - Q4: Where can people get the lunch ticket?", options: ["A. the travel agency", "B. the front desk", "C. the restaurant", "D. the office"], answer: 3 },
+            { id: 103, text: "Track 3.10 - Q5: What do people need to bring with them?", options: ["A. a jacket", "B. a backpack", "C. a hat", "D. an umbrella"], answer: 0 }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+
+        const container = document.getElementById('quiz-container');
+        const feedbackDiv = document.getElementById('feedback');
+        const nextBtn = document.getElementById('next-btn');
+        const resultContainer = document.getElementById('result-container');
+        const finalScoreP = document.getElementById('final-score');
+
+        function renderQuestion() {
+            container.innerHTML = '';
+            feedbackDiv.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+
+            const q = questions[currentIndex];
+            
+            const title = document.createElement('h3');
+            title.className = 'font-bold text-xl mb-5 text-gray-800';
+            title.innerText = `Câu ${currentIndex + 1}/${questions.length}: ${q.text}`;
+            container.appendChild(title);
+
+            q.options.forEach((opt, optIndex) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn block w-full text-left mb-3 p-4 border rounded-lg bg-gray-50 text-lg hover:bg-blue-50 hover:border-blue-300 transition duration-200';
+                btn.innerText = opt;
+                btn.onclick = () => handleSelection(optIndex, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function handleSelection(selectedIndex, clickedBtn) {
+            const q = questions[currentIndex];
+            const allBtns = document.querySelectorAll('.option-btn');
+            
+            allBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-blue-50', 'hover:border-blue-300', 'cursor-pointer');
+                btn.classList.add('cursor-not-allowed', 'opacity-90');
+            });
+
+            if (selectedIndex === q.answer) {
+                score++;
+                clickedBtn.classList.replace('bg-gray-50', 'bg-green-100');
+                clickedBtn.classList.add('border-green-500', 'text-green-800', 'font-bold');
+                
+                feedbackDiv.innerText = "Tuyệt vời! Bạn đã chọn đúng.";
+                feedbackDiv.className = "mt-4 text-center font-bold text-lg text-green-600 block";
+            } else {
+                clickedBtn.classList.replace('bg-gray-50', 'bg-red-100');
+                clickedBtn.classList.add('border-red-500', 'text-red-800', 'line-through');
+                
+                allBtns[q.answer].classList.replace('bg-gray-50', 'bg-green-100');
+                allBtns[q.answer].classList.add('border-green-500', 'text-green-800', 'font-bold');
+                
+                feedbackDiv.innerText = "Sai rồi! Đáp án đúng đã được bôi xanh.";
+                feedbackDiv.className = "mt-4 text-center font-bold text-lg text-red-600 block";
+            }
+
+            if (currentIndex === questions.length - 1) {
+                nextBtn.innerText = "Xem kết quả";
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentIndex++;
+            if (currentIndex < questions.length) {
+                renderQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            container.classList.add('hidden');
+            feedbackDiv.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            document.querySelector('h1').classList.add('hidden');
+            
+            resultContainer.classList.remove('hidden');
+            finalScoreP.innerText = `Bạn đạt ${score}/${questions.length} điểm.`;
+        }
+
+        renderQuestion();
+    </script>
+</body>
+</html>
